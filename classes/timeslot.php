@@ -296,14 +296,13 @@ class/timeslot.php
          $start = $wpdb->get_var( $sql );
          
             //var_dump($sql);die();
-if (is_wp_error($start)){
-   var_dump($sums->last_error);die();
-}
-elseif (!empty($start)) {
-
+         if (is_wp_error($start)){
+            var_dump($sums->last_error);die();
+         }
+         elseif (!empty($start)) {
             return ($end - $start)*1;
-}
-else return '';
+         }
+         else return '';
          }
          return '';
       }
@@ -350,7 +349,7 @@ else return '';
        */
       function save_metadata(){
          global $post;
-         if (!empty($_POST) && ($post) && did_action('save_post')==1){
+         if (!empty($_POST) && $post && isset($_POST['user']) && did_action('save_post')==1){
             $start = empty($_POST['start_time'])?current_time('timestamp'):strtotime($_POST['start_time']);
             $assigned_to = $_POST['user']==-1?get_current_user_id():(int)$_POST['user'];
             
