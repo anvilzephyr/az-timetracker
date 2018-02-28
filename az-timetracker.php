@@ -4,7 +4,7 @@ namespace AZTimeTracker;
 Plugin Name: AZ Time Tracker
 Plugin URI: http://anvilzephyr.com/shop
 Description: Create workspaces and tasks to track project time
-Version: 1.0
+Version: 2.0
 Author: Amy Hill
 Author URI: http://www.anvilzephyr.com
 
