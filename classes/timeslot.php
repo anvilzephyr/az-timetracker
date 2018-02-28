@@ -343,6 +343,24 @@ class/timeslot.php
          return false;
       }
       
+      public static function get_timeslot_content_array ($task_id){
+         
+         global $wpdb;
+         
+         $sql = $wpdb->prepare( "SELECT post_content FROM $wpdb->posts where post_type='az-timeslot' AND post_parent = %d AND post_content!=''", $task_id);
+         $ts = Timeslot::get_instance();
+         list($start,$end) = $ts->get_date_range();
+         if (!empty($start)){
+            $sql .=  " AND post_date > '$start' ";
+         }
+         if (!empty($end)){
+            $sql .=  " AND post_date < '$end' ";
+         }
+
+         return $wpdb->get_col( $sql );
+         
+      }
+      
       /**
        * 
        * @global \AZTimeTracker\$post $post

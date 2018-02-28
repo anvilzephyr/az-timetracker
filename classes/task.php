@@ -144,6 +144,19 @@ if (!class_exists('AZTimeTracker\\Task')){
                break;
             case 'task':
                echo get_the_title( $post_id );
+               if (!empty($_GET['show_detail'])){
+                  $breakdown = Timeslot::get_timeslot_content_array( $post_id );
+                  if (!empty($breakdown) && !is_wp_error($breakdown)){
+                     echo "<ul>ADD'L DETAIL:";
+                     foreach ($breakdown as $content){
+                        echo "<li>$content</li>";
+                     }
+                     echo "</ul>";
+                  }
+                  elseif (is_wp_error ($breakdown)){
+                     echo $breakdown;
+                  }
+               }
                break;
             case 'time':
                $time = $this->total_time($post_id);
@@ -185,6 +198,7 @@ if (!class_exists('AZTimeTracker\\Task')){
          echo Workspace::dropdown(null, $value, 'ws', 'title','ASC', '');
          $this->date_range_filter();
          $this->hide_empty_filter();
+         $this->show_detail_flag();
          $title = empty($value)?'':get_the_title($value);
          $this->print_button($title);
            
@@ -219,6 +233,11 @@ if (!class_exists('AZTimeTracker\\Task')){
          <input type='checkbox' name='hide_empty' value='1' /><label for='checkbox'><?php echo __('Hide Empty', self::$name); ?></label>
          <?php
       }
+      protected function show_detail_flag(){
+         ?>
+         <input type='checkbox' name='show_detail' value='1' /><label for='checkbox'><?php echo __('Show Detail', self::$name); ?></label>
+         <?php
+      }
       
       /**
        * Hides results with no time logged
@@ -228,7 +247,7 @@ if (!class_exists('AZTimeTracker\\Task')){
        */
       public function posts_where($where){
          global $wpdb;
-         list($start, $end) = $this->get_date_range();
+         list($start, $end) = $this->get_date_range('U');
          $where .= $wpdb->prepare( " AND ID IN (SELECT post_parent FROM $wpdb->posts where post_type='az-timeslot' and ID in (SELECT post_id FROM $wpdb->postmeta WHERE meta_key='start_time' AND meta_value BETWEEN %d AND %d) )", $start, $end);
 
          return $where;
@@ -242,7 +261,7 @@ if (!class_exists('AZTimeTracker\\Task')){
       protected function total_time($post_id){
          
          // check date range first
-         list($start, $end) = $this->get_date_range();
+         list($start, $end) = $this->get_date_range('U');
          return $this->get_time($post_id , $start, $end);
          
       }

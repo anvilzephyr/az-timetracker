@@ -239,8 +239,11 @@ if (!class_exists('AZTimeTracker\\Base')){
                //if ($i >20) break;
                $parent = get_the_title($post->post_parent);
                $parent_link = get_edit_post_link($post->post_parent, '');
+               $last = get_post_meta($post->ID,'last_activity',true);
+               error_log(__METHOD__.' '.$last);
+               $date = empty($last)?'':date( 'm-d H:s', $last );
                echo "<tr>"
-               . "<td>[<a href='$parent_link' target='blank'> $parent </a>]<a href='".get_edit_post_link($post->ID)."' target='blank'> $post->post_title ".date('m-d H:s',get_post_meta($post->ID,'last_activity',true))."</a></td>"
+               . "<td>[<a href='$parent_link' target='blank'> $parent </a>]<a href='".get_edit_post_link($post->ID)."' target='blank'> $post->post_title $date</a></td>"
                      . "<td>";
                if ($results = Timeslot::has_open_timeslot($post->ID)){ 
                   //echo "<span style='color:red'>".date('D h:i',$results->start_time); 
@@ -281,23 +284,23 @@ if (!class_exists('AZTimeTracker\\Base')){
        * get the start and end dates from query string
        * @return array
        */
-      protected function get_date_range(){
+      protected function get_date_range($format = 'Y-m-d'){
          
          if (isset($_GET['start']) && !empty($_GET['start'])) {
-               $start = strtotime(sanitize_text_field($_GET['start']));
-               $end = empty($_GET['end'])?strtotime('tomorrow'):strtotime(sanitize_text_field($_GET['end']).' 11:59');
+               $start = date($format,strtotime(sanitize_text_field($_GET['start'])));
+               $end = empty($_GET['end'])?date($format,strtotime('tomorrow')):date($format,strtotime(sanitize_text_field($_GET['end']).'+ 1 day'));
 
-            }
-            else {
-               $start = '';
-               $end = current_time('timestamp');
-            }
-            
-            return [$start, $end];
+         }
+         else {
+            $start = '';
+            $end = date($format, current_time('timestamp'));
+         }
+
+         return [$start, $end];
             
       }
       
-      protected function print_button(){
+      protected function print_button($start='', $end='', $subheading=''){
          ?>
          <button type="button" data-div='the-list' class='print-box' data-start="<?php echo $start; ?>" data-end="<?php echo $end; ?>" data-sub="<?php echo $subheading; ?>">Print</button>
          <?php
