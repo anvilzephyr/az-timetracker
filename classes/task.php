@@ -223,7 +223,7 @@ if (!class_exists('AZTimeTracker\\Task')){
 
 			}
 
-         $query->query_vars['orderby'] = 'date';
+         $query->query_vars['orderby'] = 'title';
          $query->query_vars['order'] = 'ASC';
          
       }
