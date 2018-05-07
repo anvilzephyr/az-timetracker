@@ -7,7 +7,7 @@ class/workspace.php
    class Workspace extends Base {
 
       private static $_instance = null;
-      protected static $cpt_names = [
+      public static $cpt_names = [
             'single' => 'az-workspace', 
             'plural' => 'az-workspaces', 
             'uc_single' => 'Workspace', 
@@ -221,7 +221,7 @@ class/workspace.php
          return $children;
      }
      
-   public static function dropdown($workspaces = NULL,$value = '', $name = 'workspace',$orderby = 'title', $order = 'ASC', $atts = 'required'){
+   public static function dropdown($workspaces = NULL, $value = '', $name = 'workspace',$orderby = 'title', $order = 'ASC', $atts = 'required'){
       if (is_null ($workspaces)){
            $workspaces = self::get_workspaces($orderby, $order);
       }
