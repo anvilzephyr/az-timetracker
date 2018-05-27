@@ -178,7 +178,7 @@ if (  ! class_exists( 'AZTimeTracker\\Base' ) ){
          }
          global $wpdb;
          $date = date( 'Y-m-d',strtotime( 'tomorrow' ) );
-         $sql = "select p.ID,m1.meta_value as start_time,post_author,post_parent from $wpdb->posts p join $wpdb->postmeta m1 on ( m1.post_id=p.ID and p.post_type='az-timeslot' and m1.meta_key='start_time' ) where p.ID not in ( select post_id from $wpdb->postmeta where meta_key='end_time' and meta_value  ! = '' )";
+         $sql = "select p.ID,m1.meta_value as start_time,post_author,post_parent from $wpdb->posts p join $wpdb->postmeta m1 on ( m1.post_id=p.ID and p.post_type='az-timeslot' and m1.meta_key='start_time' ) where p.ID not in ( select post_id from $wpdb->postmeta where meta_key='end_time' and meta_value  != '' )";
 
          $records = $wpdb->get_results( $sql );
 
@@ -241,8 +241,7 @@ if (  ! class_exists( 'AZTimeTracker\\Base' ) ){
                $parent = get_the_title( $post->post_parent );
                $parent_link = get_edit_post_link( $post->post_parent, '' );
                $last = get_post_meta( $post->ID,'last_activity',true );
-               error_log( __METHOD__.' '.$last );
-               $date = empty( $last )?'':date(  'm-d H:s', $last  );
+               $date = empty( $last )?'':date(  'm-d H:s', (int)$last  );
                echo "<tr>"
                . "<td>[ <a href='$parent_link' target='blank'> $parent </a> ]<a href='".get_edit_post_link( $post->ID )."' target='blank'> $post->post_title $date</a></td>"
                      . "<td>";
