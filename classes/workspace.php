@@ -228,7 +228,7 @@ class/workspace.php
 
       if ($workspaces && !is_wp_error($workspaces)){ 
          ob_start();        
-         ?><select name=<?php echo $name; ?> id='workspace' <?php echo $atts; ?>>
+         ?><select name='<?php echo $name; ?>' id='<?php echo $name; ?>' <?php echo $atts; ?>>
                 <option value= ''>Select a Workspace</option><?php
              foreach ($workspaces as $space){
                 ?> <option value ='<?php echo $space->ID; ?>' <?php selected($value,$space->ID); ?>><?php echo $space->post_title; ?></option><?php

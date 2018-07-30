@@ -79,8 +79,8 @@ if (  ! class_exists( 'AZTimeTracker\\Base' ) ){
                'map_meta_cap'       => true,
                'has_archive'        => true,
                'can_export'         => true,
-               'hierarchical'       => false,
-               'supports'           => [ 'title','page-attributes','author','editor','thumbnail' ],
+               'hierarchical'       => $names[ 'single' ]=='az_timeslot'?false:true,
+               'supports'           => [ 'title','author','editor','thumbnail' ],
              ];
 
             register_post_type(  $names[ 'single' ] , $args  );
@@ -224,9 +224,10 @@ if (  ! class_exists( 'AZTimeTracker\\Base' ) ){
       function recent_tasks_widget(){
          $posts = get_posts( [ 
                'post_type'    => [ 'az-task' ],
-               'numberposts'  => apply_filters( 'az_recent_tasks_count',-1 ),
+               'numberposts'  => apply_filters( 'az_recent_tasks_count',12 ),
                'meta_key'     => 'last_activity',
-               'orderby'      => 'meta_value_num',             
+               'orderby'      => 'meta_value',
+    
                
           ] );
 
@@ -241,7 +242,7 @@ if (  ! class_exists( 'AZTimeTracker\\Base' ) ){
                $parent = get_the_title( $post->post_parent );
                $parent_link = get_edit_post_link( $post->post_parent, '' );
                $last = get_post_meta( $post->ID,'last_activity',true );
-               $date = empty( $last )?'':date(  'm-d H:s', (int)$last  );
+               $date = empty( $last )?'':date(  'M d H:i', strtotime($last)  );
                echo "<tr>"
                . "<td>[ <a href='$parent_link' target='blank'> $parent </a> ]<a href='".get_edit_post_link( $post->ID )."' target='blank'> $post->post_title $date</a></td>"
                      . "<td>";

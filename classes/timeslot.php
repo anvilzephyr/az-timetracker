@@ -290,21 +290,21 @@ class/timeslot.php
          $end = $wpdb->get_var($sql1);
          if ($end>=1){ // we have a timeslot
          
-         $sql = $wpdb->prepare("SELECT s.meta_value FROM $tablename s  "
-            . " where s.post_id =%d and s.meta_key='start_time' and s.meta_value>=%d ",$post_id,$start );
-         
-         $start = $wpdb->get_var( $sql );
-         
-            //var_dump($sql);die();
-         if (is_wp_error($start)){
-            var_dump($sums->last_error);die();
+            $sql = $wpdb->prepare("SELECT s.meta_value FROM $tablename s  "
+               . " where s.post_id =%d and s.meta_key='start_time' and s.meta_value>=%d ",$post_id,$start );
+
+            $start = $wpdb->get_var( $sql );
+               //var_dump($sql);die();
+            if (is_wp_error($start)){
+               var_dump($sums->last_error);die();
+            }
+            elseif (!empty($start)) {
+               return ($end - $start)*1;
+            }
+            else return 0;
+            
          }
-         elseif (!empty($start)) {
-            return ($end - $start)*1;
-         }
-         else return '';
-         }
-         return '';
+         return 0;
       }
       
       /**

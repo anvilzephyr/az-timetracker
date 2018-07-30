@@ -164,7 +164,8 @@ if ( !class_exists( 'AZTimeTracker\\Task' ) ){
                   echo "<span >".sprintf( "%02d%s%02d%s", floor( $time/3600 ), 'h', ( $time/60 )%60, 'm' )." ( </span><span class='time-span'>".number_format( $time/3600,2 )." )</span>";
                break;
             case 'last_date':
-               echo apply_filters( 'aztime_last_activity',date( 'm/d',$this->last_date ),$this->last_date );
+               if ($this->last_date)
+                  echo apply_filters( 'aztime_last_activity',date( 'm/d',$this->last_date ),$this->last_date );
                break;
             case 'action':
                if  ( get_post_status( $post_id )== 'publish' ) :
