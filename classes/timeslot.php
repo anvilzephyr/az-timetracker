@@ -163,7 +163,7 @@ class/timeslot.php
       public function filter_list( $query ){
 			global $pagenow;
 			
-			if ( $query->query['post_type'] == 'az-timeslot' && is_admin() && $pagenow=='edit.php' ){
+			if ( $query->query['post_type'] == 'az-timeslot' && is_admin() && $pagenow=='edit.php' && $query->is_main_query()){
             // filter by workspace
             if (isset($_GET['ws']) && !empty($_GET['ws'])  ) {
                $ws = (int)$_GET['ws'];

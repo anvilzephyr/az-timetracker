@@ -126,7 +126,7 @@ class/workspace.php
          
 			global $pagenow;
 			
-			if ( $query->query['post_type'] == 'az-workspace' && is_admin() && $pagenow=='edit.php' ){
+			if ( $query->query['post_type'] == 'az-workspace' && is_admin() && $pagenow=='edit.php' && $query->is_main_query()){
             // filter by workspace
             if (isset($_GET['ws']) && !empty($_GET['ws'])  ) {
                $children = self::get_workspace_children((int)$_GET['ws'], ['az-workspace'], 'ids');
