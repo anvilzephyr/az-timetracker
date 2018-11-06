@@ -34,13 +34,13 @@ if ( !class_exists( 'AZTimeTracker\\Task' ) ){
          add_filter( 'manage_az-task_posts_columns', array( $this,'columns_head' ),10,1 );
          add_action( 'manage_az-task_posts_custom_column', array( $this,'columns_content' ), 10, 2 );
          add_filter( 'default_title', array( $this,'remove_title_filter' ), 100, 2 ); 
-         
       }
 
       
       /*************
-       * Admin view metaboxes
+       * Admin view 
        */
+      
       
       function add_meta_boxes(){
          add_meta_box( "workspace", "Workspace", array( $this, "workspace_box" ),self::$cpt_names[ 'single' ], "side", "high" );
@@ -211,7 +211,7 @@ if ( !class_exists( 'AZTimeTracker\\Task' ) ){
          
 			global $pagenow;
 			
-			if ( $query->query[ 'post_type' ] == 'az-task' && is_admin() && $pagenow=='edit.php' ){
+			if ( $query->query[ 'post_type' ] == 'az-task' && is_admin() && $pagenow=='edit.php' && $query->is_main_query() ){
             // filter by workspace
             if ( isset( $_GET[ 'ws' ] ) && !empty( $_GET[ 'ws' ] )  ) {
 
@@ -223,11 +223,12 @@ if ( !class_exists( 'AZTimeTracker\\Task' ) ){
             if ( isset( $_GET[ 'hide_empty' ] ) ){
                add_filter( 'posts_where', [ $this, 'posts_where' ] );
             }
+            $query->query_vars[ 'orderby' ] = 'date';
+            $query->query_vars[ 'order' ] = 'DESC';
 
 			}
 
-         //$query->query_vars[ 'orderby' ] = 'title';
-         //$query->query_vars[ 'order' ] = 'ASC';
+         
          
       }
       

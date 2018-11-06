@@ -231,7 +231,7 @@ class/workspace.php
          ?><select name='<?php echo $name; ?>' id='<?php echo $name; ?>' <?php echo $atts; ?>>
                 <option value= ''>Select a Workspace</option><?php
              foreach ($workspaces as $space){
-                ?> <option value ='<?php echo $space->ID; ?>' <?php selected($value,$space->ID); ?>><?php echo $space->post_title; ?></option><?php
+                ?> <option value ='<?php echo $space->ID; ?>' <?php selected($value,$space->ID); ?> class='parent-ws'><?php echo $space->post_title; ?></option><?php
                 $children = self::get_workspace_children($space->ID, ['az-workspace']);
                 if ($children && !is_wp_error($children)){
                    foreach ($children as $child){

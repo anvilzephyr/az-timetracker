@@ -4,7 +4,7 @@ namespace AZTimeTracker;
 Plugin Name: AZ Time Tracker
 Plugin URI: http://anvilzephyr.com/shop
 Description: Create workspaces and tasks to track project time
-Version: 2.0.1
+Version: 2.0.2
 Author: Amy Hill
 Author URI: http://www.anvilzephyr.com
 
@@ -53,6 +53,10 @@ if (!class_exists('AZTimeTracker')){
          wp_enqueue_script('az-timetracker',  plugins_url().'/'.AZTIME_DIR.'/assets/timetracker.js', ['jquery'], time(), true);
          $screen = get_current_screen();
          wp_localize_script('az-timetracker', 'aztt_screen' , $screen->id);
+         global $pagenow;
+         global $post_type;
+         if ('az-task' == $post_type && 'edit.php' == $pagenow )
+         wp_enqueue_style( 'timetracker-css', plugins_url() . '/az-timetracker/assets/timetracker.css','', 1.0);
       }
       
       public static function install(){

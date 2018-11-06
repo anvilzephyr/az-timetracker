@@ -1,3 +1,6 @@
+2.0.2
+Fix sort by on widget
+Add details filter checkbox to task list
 2.0.1
 Fix missing total in task timeslots table
 Fix missing dates on report
