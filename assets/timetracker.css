@@ -20,3 +20,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 .parent-ws {font-weight:600;}
 .child-ws{color:#cd4c1b}
+table.wp-list-table.fixed{
+  table-layout: inherit !important;
+}

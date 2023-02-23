@@ -32,7 +32,7 @@ if (!class_exists('AZTimeTracker')){
          // run the install scripts upon plugin activation
          register_activation_hook(__FILE__, [__CLASS__, 'install']);
          // run the install scripts upon plugin activation
-         register_uninstall_hook(__FILE__, [__CLASS__, 'uninstall']);
+         //register_uninstall_hook(__FILE__, [__CLASS__, 'uninstall']);
          $this->load_classes();  
          add_action('admin_enqueue_scripts', [$this, 'enqueue_files']);
 

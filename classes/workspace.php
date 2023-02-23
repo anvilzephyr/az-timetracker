@@ -31,6 +31,7 @@ class/workspace.php
          add_filter( 'pre_get_posts', array($this,'filter_list' ));
          add_filter( 'manage_az-workspace_posts_columns', array($this,'columns_head'),10,1);
          add_action( 'manage_az-workspace_posts_custom_column', array($this,'columns_content'), 10, 2);
+         add_action( "save_post_".self::$cpt_names['single'], array( $this,'save_metabox_data') );
       }
       
       /***********************
@@ -43,6 +44,7 @@ class/workspace.php
 
          //add_meta_box("", "Checklist", array($this, "class_checklist_box"),'gs_class', "side", "high");
          add_meta_box("tasks",__('Tasks', self::$name) , [$this, "tasks_box"],self::$cpt_names['single'], "normal", "high");
+         add_meta_box("access-csvs", "Access CSV Files", array($this, "doc_box"),self::$cpt_names['single'], "side", "low");
          
       }
       
@@ -126,7 +128,7 @@ class/workspace.php
          
 			global $pagenow;
 			
-			if ( $query->query['post_type'] == 'az-workspace' && is_admin() && $pagenow=='edit.php' && $query->is_main_query()){
+			if ( isset($query->query['post_type']) && $query->query['post_type'] == 'az-workspace' && is_admin() && $pagenow=='edit.php' && $query->is_main_query()){
             // filter by workspace
             if (isset($_GET['ws']) && !empty($_GET['ws'])  ) {
                $children = self::get_workspace_children((int)$_GET['ws'], ['az-workspace'], 'ids');

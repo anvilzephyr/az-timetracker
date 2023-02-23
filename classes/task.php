@@ -161,7 +161,7 @@ if ( !class_exists( 'AZTimeTracker\\Task' ) ){
             case 'time':
                $time = $this->total_time( $post_id );
                if ( $time )
-                  echo "<span >".sprintf( "%02d%s%02d%s", floor( $time/3600 ), 'h', ( $time/60 )%60, 'm' )."</span><span class='time-span'>".number_format( $time/3600,2 )." )</span>";
+                  echo "<span >".sprintf( "%02d%s%02d%s", floor( $time/3600 ), 'h', ( $time/60 )%60, 'm' )."</span><br> ( <span class='time-span'>".number_format( $time/3600,2 )."</span> )";
                break;
             case 'last_date':
                if ($this->last_date)
@@ -211,7 +211,7 @@ if ( !class_exists( 'AZTimeTracker\\Task' ) ){
          
 			global $pagenow;
 			
-			if ( $query->query[ 'post_type' ] == 'az-task' && is_admin() && $pagenow=='edit.php' && $query->is_main_query() ){
+			if ( isset($query->query[ 'post_type' ] ) && $query->query[ 'post_type' ] == 'az-task' && is_admin() && $pagenow=='edit.php' && $query->is_main_query() ){
             // filter by workspace
             if ( isset( $_GET[ 'ws' ] ) && !empty( $_GET[ 'ws' ] )  ) {
 

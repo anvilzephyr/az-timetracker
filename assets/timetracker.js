@@ -74,7 +74,7 @@
             mywindow.document.write( '<div><p>From: '+start+" To: "+end+"</p></div>" );
             mywindow.document.write( '<table><tr><td>Workspace</td><td>Task</td><td>Time</td><td>Last Activity</td></tr>'+$( '#'+div_id ).html()+'</table></body></html>' );
             mywindow.print();
-            mywindow.close();
+            //mywindow.close();
         } );
 
 
@@ -98,8 +98,45 @@
                 $( '#the-list' ).append( '<tr><td>&nbsp;</td><td class="row-title" colspan="'+( time_col-1 )+'">Total Time</td><td class="number" style="text-align:right;">'+total.toFixed( 2 )+'</td><td colspan="'+( colCount-2 )+'"></tr>' )
             }
         }
-
-    } );
+              
+	 $('#upload-btn').click(function(e) {
+         	 
+        e.preventDefault();
+        var image = wp.media({ 
+            title: 'Upload File',
+            // mutiple: true if you want to upload multiple files at once
+            multiple: false
+        }).open()
+        .on('select', function(e){
+            // This will return the selected file from the Media Uploader, the result is an object
+            var uploaded_image = image.state().get('selection').first();
+            // convert uploaded_image to a JSON object to make accessing it easier
+            //console.log(uploaded_image);
+            var image_url = uploaded_image.toJSON().url;
+            // Let's assign the url value to the input field
+            $('#file_url').val(image_url);
+        });
+    });
+	$('#upload-attach').click(function(e) {
+		 
+        e.preventDefault();
+        var image = wp.media({ 
+            title: 'Attach File',
+            // mutiple: true if you want to upload multiple files at once
+            multiple: true
+        }).open()
+        .on('select', function(e){
+            // This will return the selected file from the Media Uploader, the result is an object
+            var uploaded_image = image.state().get('selection').first();
+            // We convert uploaded_image to a JSON object to make accessing it easier
+            // Output to the console uploaded_image
+            console.log(uploaded_image);
+            var image_url = uploaded_image.toJSON().url;
+            // Let's assign the url value to the input field
+            $('#attach_url').val(image_url);
+        });
+    });
+    } );  // end .ready
     
     function set_time( value,task ){
         

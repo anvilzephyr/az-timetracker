@@ -49,6 +49,11 @@ class/timeslot.php
          $args = [
                'numberposts'     => -1,
                'post_type'       => 'az-task',
+               'orderby'         => [
+                     'post_parent'  => 'ASC',
+                     'ID'           => 'DESC',
+                     ]
+               
          ];
          $tasks = get_posts($args);
          if ($tasks && !is_wp_error($tasks)){
@@ -56,7 +61,7 @@ class/timeslot.php
             ?><select name='parent_id' id='task' required>
                <option value= ''>Select a Workspace</option><?php
             foreach ($tasks as $space){
-               ?> <option value ='<?php echo $space->ID; ?>' <?php selected($post->post_parent,$space->ID); ?>><?php echo $space->post_title; ?></option><?php
+               ?> <option value ='<?php echo $space->ID; ?>' <?php selected($post->post_parent,$space->ID); ?>><?php echo "<strong>".get_the_title($space->post_parent).'</strong>: '.$space->post_title; ?></option><?php
             }
             ?></select><?php
          }
@@ -163,7 +168,7 @@ class/timeslot.php
       public function filter_list( $query ){
 			global $pagenow;
 			
-			if ( $query->query['post_type'] == 'az-timeslot' && is_admin() && $pagenow=='edit.php' && $query->is_main_query()){
+			if ( isset($query->query[ 'post_type' ]) && $query->query['post_type'] == 'az-timeslot' && is_admin() && $pagenow=='edit.php' && $query->is_main_query()){
             // filter by workspace
             if (isset($_GET['ws']) && !empty($_GET['ws'])  ) {
                $ws = (int)$_GET['ws'];
@@ -347,7 +352,7 @@ class/timeslot.php
          
          global $wpdb;
          
-         $sql = $wpdb->prepare( "SELECT post_content FROM $wpdb->posts where post_type='az-timeslot' AND post_parent = %d AND post_content!=''", $task_id);
+         $sql = $wpdb->prepare( "SELECT post_content FROM $wpdb->posts where post_type='az-timeslot' AND post_parent = %d AND post_content!='' && post_status='publish'", $task_id);
          $ts = Timeslot::get_instance();
          list($start,$end) = $ts->get_date_range();
          if (!empty($start)){

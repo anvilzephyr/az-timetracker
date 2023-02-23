@@ -30,6 +30,7 @@ if (  ! class_exists( 'AZTimeTracker\\Base' ) ){
          add_action( 'init',[ $this,'init' ] );
          add_action( 'admin_init',[ $this,'admin_init' ] );
          add_action(  'wp_dashboard_setup',array( $this, 'add_dashboard_widgets'  ) );
+         
         // add_action(  'save_post', [ $this, 'save_custom_data' ]  );
           
       }
@@ -74,13 +75,14 @@ if (  ! class_exists( 'AZTimeTracker\\Base' ) ){
 					 ],
                'public'             => true,
                'show_in_menu'       => 'edit.php?post_type='.$names[ 'single' ],
-               'query_var'          => true,
+               'query_var'          => false,
                'capability_type'    => 'az-task',
                'map_meta_cap'       => true,
-               'has_archive'        => true,
+               'has_archive'        => false,
+			   'publicly_queryable' => false,
                'can_export'         => true,
-               'hierarchical'       => $names[ 'single' ]=='az_timeslot'?false:true,
-               'supports'           => [ 'title','author','editor','thumbnail' ],
+               'hierarchical'       => $names[ 'single' ]=='az-timeslot'?false:true,
+               'supports'           => [ 'title','author','editor','thumbnail','page-attributes' ],
              ];
 
             register_post_type(  $names[ 'single' ] , $args  );
@@ -232,7 +234,7 @@ if (  ! class_exists( 'AZTimeTracker\\Base' ) ){
           ] );
 
          echo "<div class='inner'>" ; ?>
-         <a href='http://localhost/wordpress/wp-admin/post-new.php?post_type=az-task' class='btn btn-large'>Create New Task</a>
+         <a href='/wp-admin/post-new.php?post_type=az-task' class='btn btn-large'>Create New Task</a>
          <?php
          if ( $posts &&  ! is_wp_error( $posts ) ){
             $i = 1;
@@ -374,7 +376,50 @@ if (  ! class_exists( 'AZTimeTracker\\Base' ) ){
  
       }
 
+      /**
+       * Upload documents to various post types
+       * @global obj $post
+       * @global obj $wpdb
+       */
+      public static function doc_box( $post ){ 
+      ?>
+         
+         <div>
+             <label for="file_url">Upload File</label>
+             <input type="text" name="az-document" id="file_url" class="med-text">
+             <input type="button" name="upload-btn" id="upload-btn" class="button-secondary" value="Upload File">
+         </div>
 
-   }
+         <?php
+         global $wpdb;
+         $docs = $wpdb->get_results($wpdb->prepare("SELECT meta_id,post_id,meta_key,meta_value FROM $wpdb->postmeta WHERE post_id=%d and meta_key LIKE 'az-document' ORDER BY meta_id ASC", $post->ID));
+         if ($docs){
+            ?><h4>Uploaded Files:</h4><?php
+            echo "<ul>";
+            foreach ($docs as $doc){
+               $paths = explode('/',$doc->meta_value);
+               $date = $wpdb->get_var($wpdb->prepare("SELECT post_date FROM $wpdb->posts WHERE post_type='attachment' and guid=%s LIMIT 1", $doc->meta_value));
+               echo "<li><a href='{$doc->meta_value}' target='_blank' >$date ".array_pop($paths)."</a>";
+               //<input type='checkbox' value='{$doc->meta_id}' name='remove_doc[]'/>Detach</li>";
+            }
+            echo "</ul>";
+         }
+      }
+      
+      public function save_metabox_data($post_id){
+         if ( wp_is_post_revision( $post_id ) ) {
+            return;
+        }
+         if (!empty( $_POST['az-document'] )){
+            $this->upload_document($post_id, $_POST['az-document'] );
+         }
+      }
+      
+      public function upload_document($post_id, $url){
+         if (empty($url))
+            return;
+         return add_post_meta($post_id,'az-document',filter_var($url, FILTER_SANITIZE_URL));
+      }
+   }// end class
 }
 $aztt = Base::get_instance();
